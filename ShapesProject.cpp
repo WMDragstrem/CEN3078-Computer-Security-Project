@@ -3,6 +3,7 @@
 // Devl : William Dragstrem
 // Desc : Final project in which user adds different shapes to a collection
 // and prints calculation details about all the shapes
+// Ver  : 1.1.0
 //--------------------------------------------------------------
 #include <iostream> //console I/O
 #include <vector>
@@ -11,9 +12,11 @@
 #include "Line.h" //line class
 #include "Rectangle.h" //rectangle class
 #include "Circle.h" //circle class
+#include <algorithm> //for count()
 
 //Constants & Types
 //--------------------------------------------------------------
+const int MAX_SHAPES = 256; //maximum amount of shapes allowed to be saved to memory
 
 // Function Prototypes
 //--------------------------------------------------------------
@@ -35,7 +38,13 @@ int main() {
     char input;
 
     std::vector<Shape *> shapesVec;
+    std::vector<char> shapeInputs;
+    shapeInputs = {'l', 'r',
+                   'c'}; //must be updated whenever a new shape is added to work with the numLoops check during user input
 
+    int numLoops = 0;
+    //added at the end of each shape input. Limits the total number of inputs to a set amount
+    // (listed in the while loop condition) to prevent memory leaks.
 
     do {
         std::cout << "\n-------------------------Shapes.cpp-------------------------";
@@ -45,29 +54,53 @@ int main() {
         std::cout << "Circle" << std::endl;
         std::cout << "Print" << std::endl;
         std::cout << "Exit" << std::endl;
-        std::cout << ">";
-        std::cin >> input;
 
+        if (numLoops < MAX_SHAPES) {
+            std::cout << ">";
+            std::cin >> input;
+            input = tolower(input); //sets input to lowercase so capital and lowercase input can be accepted
+        } else {
+            std::cout << ">";
 
-        input = tolower(input); //sets input to lowercase so capital and lowercase input can be accepted
+            bool redoInput = true;
+            while (redoInput) {
+                std::cin >> input;
+                input = tolower(input); //sets input to lowercase so capital and lowercase input can be accepted
 
-
+                if (std::count(shapeInputs.begin(), shapeInputs.end(), input) == 0) {
+                    //counts how many times the input appears in shapeInputs vector (if 0, then it isn't a shape input, otherwise it is, which would exceed MAX_SHAPES)
+                    //allows the UNKNOWN INPUT error message if the input isn't a shape input but still isnt one of the non-shape inputs (such as print or exit)
+                    redoInput = false;
+                } else {
+                    std::cout << "------------------------------------------------------------" << std::endl;
+                    std::cout
+                            << "You have exceeded the number of saved shapes! \nYou may still Print or Exit the program."
+                            << std::endl;
+                    std::cout << "------------------------------------------------------------" << std::endl;
+                    std::cout << ">";
+                }
+            }
+        }
+        //Once the number of saved shapes is >= MAX_SHAPES, the program only allows the user to either print or exit, otherwise it prints an error message
 
         switch (input) {
             case 'l':
                 std::cout << "\nLine Selected." << std::endl;
                 shapesVec.push_back(getLine());
                 std::cout << "Line Saved." << std::endl;
+                numLoops += 1;
                 break; //end line
             case 'r':
                 std::cout << "\nRectangle selected. Input top-left coordinate." << std::endl;
                 shapesVec.push_back(getRectangle());
                 std::cout << "Rectangle Saved." << std::endl;
+                numLoops += 1;
                 break; //end rectangle
             case 'c':
                 std::cout << "\nCircle selected. Input center coordinate." << std::endl;
                 shapesVec.push_back(getCircle());
                 std::cout << "Circle Saved." << std::endl;
+                numLoops += 1;
                 break; //end circle
             case 'p':
                 std::cout << "\nPrinting Selections..." << std::endl;
@@ -102,13 +135,24 @@ int main() {
 /**
  * Prompts user for x and y coordinate info for a single point
  * @return point variable
+ * https://cplusplus.com/forum/beginner/123439/
+ * above website used as a source to limit inputs to only whole numbers
  */
 Point getPoint() {
-    Point point;//Calls default constructor, makes empty point (0,0)
-    std::cout << "Type X then Y coord separated by a space\n>";
-
+    Point point;//Calls default constructor, makes empty point (0,0)l
+    bool validInput = false;
     int xInput, yInput;
-    std::cin >> xInput >> yInput;
+
+    while (!validInput) {
+        std::cout << "Type X then Y coord separated by a space\n>";
+        char c;
+        if (!(std::cin >> xInput >> yInput) || (std::cin.get(c) && !std::isspace(c))) {
+            std::cout << "Entry must be a valid integer! Try again: \n";
+            std::cin.clear();
+            std::cin.ignore(500, '\n');
+
+        } else validInput = true; // ends the loop
+    }
 
     point.setX(xInput);
     point.setY(yInput);
@@ -177,9 +221,19 @@ Circle *getCircle() {
  * @return dimension measurement
  */
 int getDimension(std::string dimName) {
-    std::cout << "Enter " + dimName + "\n";
     int dimension;
-    std::cin >> dimension;
+    bool validInput = false;
+
+    while (!validInput) {
+        std::cout << "Enter " + dimName + "\n";
+        char c;
+        if (!(std::cin >> dimension) || (std::cin.get(c) && !std::isspace(c))) {
+            std::cout << "Entry must be a valid integer! Try again: \n";
+            std::cin.clear();
+            std::cin.ignore(500, '\n');
+
+        } else validInput = true; //end loop
+    }
 
     return dimension;
 }//end getDimension
