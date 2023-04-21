@@ -6,7 +6,7 @@ The main file is ShapesProject.cpp, the rest are all its header files.
 \
 ## TERMS OF USE
 \
-This application is intended for educational purposes only. This project is a work-in-progress and as such is not guaranteed to function perfectly. By downloading any files within this repository, you assume full responsibility for any damages to your device or network that may incur from running this application. We are not responsible for improper and irresponsible usage of these files. Input only what is requested by the program.\
+This application is intended for educational purposes only. This project is a work-in-progress and as such is not guaranteed to function perfectly. By downloading any files within this repository, you assume full responsibility for any damages to your device or network that may incur from running this application. We are not responsible for improper and irresponsible usage of these files. Input only what is requested by the program.
 
 
 
