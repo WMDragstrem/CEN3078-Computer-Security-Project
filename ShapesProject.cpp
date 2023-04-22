@@ -3,7 +3,7 @@
 // Devl : William Dragstrem
 // Desc : Final project in which user adds different shapes to a collection
 // and prints calculation details about all the shapes
-// Ver  : 1.1.0
+// Ver  : 1.2.0
 //--------------------------------------------------------------
 #include <iostream> //console I/O
 #include <vector>
@@ -18,6 +18,17 @@
 //--------------------------------------------------------------
 const int MAX_SHAPES = 256; //maximum amount of shapes allowed to be saved to memory
 
+enum Input //TypeOfShape Enum in the shape header already uses the shape names, needs addressed.
+{
+    LINEIN = 1,
+    RECTANGLEIN,
+    CIRCLEIN,
+    PRINTIN,
+    EXITIN,
+
+
+};
+
 // Function Prototypes
 //--------------------------------------------------------------
 Point getPoint();
@@ -30,42 +41,37 @@ Circle *getCircle();
 
 int getDimension(std::string dimName);
 
+int getIntInput();
+
 //--------------------------------------------------------------
 
 
 int main() {
 
-    char input;
+    int input;
 
     std::vector<Shape *> shapesVec;
     std::vector<char> shapeInputs;
-    shapeInputs = {'l', 'r',
-                   'c'}; //must be updated whenever a new shape is added to work with the numLoops check during user input
+    shapeInputs = {LINEIN, RECTANGLEIN, CIRCLEIN}; //must be updated whenever a new shape is added to work with the numLoops check during user input
 
     int numLoops = 0;
     //added at the end of each shape input. Limits the total number of inputs to a set amount
     // (listed in the while loop condition) to prevent memory leaks.
 
     do {
-        std::cout << "\n-------------------------Shapes.cpp-------------------------";
-        std::cout << "\nEnter 1st character:" << std::endl;
-        std::cout << "Line" << std::endl;
-        std::cout << "Rectangle" << std::endl;
-        std::cout << "Circle" << std::endl;
-        std::cout << "Print" << std::endl;
-        std::cout << "Exit" << std::endl;
 
         if (numLoops < MAX_SHAPES) {
             std::cout << ">";
-            std::cin >> input;
-            input = tolower(input); //sets input to lowercase so capital and lowercase input can be accepted
+
+            input = getIntInput();
+
         } else {
             std::cout << ">";
 
             bool redoInput = true;
             while (redoInput) {
-                std::cin >> input;
-                input = tolower(input); //sets input to lowercase so capital and lowercase input can be accepted
+                input = getIntInput();
+
 
                 if (std::count(shapeInputs.begin(), shapeInputs.end(), input) == 0) {
                     //counts how many times the input appears in shapeInputs vector (if 0, then it isn't a shape input, otherwise it is, which would exceed MAX_SHAPES)
@@ -84,31 +90,31 @@ int main() {
         //Once the number of saved shapes is >= MAX_SHAPES, the program only allows the user to either print or exit, otherwise it prints an error message
 
         switch (input) {
-            case 'l':
+            case LINEIN:
                 std::cout << "\nLine Selected." << std::endl;
                 shapesVec.push_back(getLine());
                 std::cout << "Line Saved." << std::endl;
                 numLoops += 1;
                 break; //end line
-            case 'r':
+            case RECTANGLEIN:
                 std::cout << "\nRectangle selected. Input top-left coordinate." << std::endl;
                 shapesVec.push_back(getRectangle());
                 std::cout << "Rectangle Saved." << std::endl;
                 numLoops += 1;
                 break; //end rectangle
-            case 'c':
+            case CIRCLEIN:
                 std::cout << "\nCircle selected. Input center coordinate." << std::endl;
                 shapesVec.push_back(getCircle());
                 std::cout << "Circle Saved." << std::endl;
                 numLoops += 1;
                 break; //end circle
-            case 'p':
+            case PRINTIN:
                 std::cout << "\nPrinting Selections..." << std::endl;
                 for (int i = 0; i < shapesVec.size(); i++) {
                     std::cout << shapesVec[i]->displayInfo() << std::endl;
                 }
                 break; // end print
-            case 'e':
+            case EXITIN:
                 std::cout << "\nExiting..." << std::endl;
 
                 break; //end exit
@@ -119,7 +125,7 @@ int main() {
         }
 
 
-    } while (input != 'e');
+    } while (input != EXITIN);
 
 //clears shapesVec
     for (int i = 0; i < shapesVec.size(); i++) {
@@ -237,3 +243,28 @@ int getDimension(std::string dimName) {
 
     return dimension;
 }//end getDimension
+
+int getIntInput(){
+    bool validInput = false;
+    int intInput;
+    while (!validInput) {
+
+        char c;
+
+        std::cout << "\n-------------------------Shapes.cpp-------------------------";
+        std::cout << "\nEnter number next to chosen command:" << std::endl;
+        std::cout << "1) Line" << std::endl;
+        std::cout << "2) Rectangle" << std::endl;
+        std::cout << "3) Circle" << std::endl;
+        std::cout << "4) Print" << std::endl;
+        std::cout << "5) Exit" << std::endl;
+        std::cout << ">";
+        if (!(std::cin >> intInput) || (std::cin.get(c) && !std::isspace(c))) {
+            std::cout << "Entry must be a valid integer! Try again: \n";
+            std::cin.clear();
+            std::cin.ignore(500, '\n');
+
+        } else validInput = true; //end loop
+    }
+    return intInput;
+}
