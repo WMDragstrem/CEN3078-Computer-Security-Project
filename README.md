@@ -13,5 +13,5 @@ This application is intended for educational purposes only. This project is a wo
 ## Ver 1.2.0
 *One new feature added for this update to the ShapesProject.cpp file* \
 \
-Program now accepts integers, rather than chars as input, reducing the risk of code injection and allowing the usage of enums for better future-proofing.\
+Program now accepts integers, rather than chars as input, reducing the risk of code injection and allowing the usage of enums for better future-proofing.
 
