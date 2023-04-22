@@ -18,7 +18,7 @@
 //--------------------------------------------------------------
 const int MAX_SHAPES = 256; //maximum amount of shapes allowed to be saved to memory
 
-enum Input //TypeOfShape Enum in the shape header already uses the shape names, needs addressed.
+enum InputType //TypeOfShape Enum in the shape header already uses the shape names, needs addressed.
 {
     LINEIN = 1,
     RECTANGLEIN,
